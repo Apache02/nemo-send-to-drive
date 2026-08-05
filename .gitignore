@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# screenshots produced by tests/render_window.py
+tests/*.png

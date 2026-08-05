@@ -1,0 +1,17 @@
+[Nemo Action]
+
+Name=Send to Google Drive/exchange…
+Comment=Copy the selection into a device folder under Google Drive/exchange
+
+# Angle brackets wrap the WHOLE command, arguments included, and tell Nemo the
+# executable lives next to this file. Writing <script> %U instead of <script %U>
+# silently does nothing: the menu entry appears but never launches.
+#
+# %U expands to percent-encoded URIs, so spaces, quotes and non-ASCII characters
+# in file names need no extra quoting - hence no Quote= line here.
+Exec=<send-to-google-drive.py %U>
+
+Icon-Name=folder-remote
+Selection=NotNone
+Extensions=any;
+Dependencies=python3;
