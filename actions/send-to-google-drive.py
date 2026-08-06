@@ -92,6 +92,26 @@ def find_drive_root():
     return None
 
 
+def find_exchange(drive):
+    """Locate the exchange folder under the account root.
+
+    Some gvfs versions expose Drive content directly under the root; others
+    insert an extra "My Drive" container next to "Shared with me" first. That
+    container's name is localized, so rather than matching it, look one
+    directory deeper whenever a direct match fails.
+    """
+    direct = child_by_name(drive, EXCHANGE, want_dir=True)
+    if direct is not None:
+        return direct
+    for info in children(drive):
+        if info.get_file_type() != Gio.FileType.DIRECTORY:
+            continue
+        nested = child_by_name(drive.get_child(info.get_name()), EXCHANGE, want_dir=True)
+        if nested is not None:
+            return nested
+    return None
+
+
 class NotReady(Exception):
     """Drive is missing something the action cannot work without."""
 
@@ -120,7 +140,7 @@ def load_targets():
             "Open it once from the Nemo sidebar, then try again."
         )
 
-    exchange = child_by_name(drive, EXCHANGE, want_dir=True)
+    exchange = find_exchange(drive)
     if exchange is None:
         raise NotReady(f"There is no “{EXCHANGE}” folder at the root of Google Drive.")
 
